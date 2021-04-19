@@ -16,10 +16,21 @@ export default {
   },
   actions: {
     async fetchClients({commit}) {
-      const url = 'http://www.filltext.com/?rows=32&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}';
-
+      const url = new URL('http://www.filltext.com');
+      const urlParams = [
+        {key: 'rows', value: 32},
+        {key: 'id', value: '{number|1000000}'},
+        {key: 'firstName', value: '{firstName}'},
+        {key: 'lastName', value: '{lastName}'},
+        {key: 'email', value: '{email}'},
+        {key: 'phone', value: '{phone|(xxx)xxx-xx-xx}'},
+        {key: 'address', value: '{addressObject}'},
+        {key: 'description', value: '{lorem|32}'},
+      ]
+      for (const {key, value} of urlParams) {
+        url.searchParams.set(key, value);
+      }
       const response = await fetch(url);
-      console.log(response)
       commit('setClients', await response.json());
     },
   },
