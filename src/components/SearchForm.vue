@@ -1,14 +1,14 @@
 <template>
   <form
-    @submit.prevent="handleSearch"
     class="d-flex"
+    @submit.prevent="handleSearch"
   >
     <input
-      @input="handleSearch"
-      @keyup.delete="handleSearch"
       v-model="input"
       type="text"
       class="form-control rounded-0 rounded-start"
+      @input="handleSearch"
+      @keyup.delete="handleSearch"
     />
     <input
       type="submit"
