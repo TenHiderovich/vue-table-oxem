@@ -1,11 +1,12 @@
 <template>
   <div>
-    <table class="table">
+    <table class="table table-striped table-hover">
       <thead>
         <tr>
           <th
             v-for="th in thead"
             :key="th.name"
+            scope="col"
           >
             {{ th.name }}
           </th>
@@ -32,6 +33,7 @@
     <TablePagination
       :post-count="clients.length"
       :max-posts="postsSlice.max"
+      :current-page-number="currentPageNumber"
       @setPostsSlice="setPostsSlice"
     ></TablePagination>
   </div>
@@ -58,13 +60,16 @@ export default {
     clients() {
       return this.$store.getters["getClients"];
     },
+    filteredClients() {
+      return this.$store.getters["getFilteredClients"];
+    },
     clientsSlice() {
       const { start, end } = this.postsSlice;
       return this.clients.slice(start, end);
     },
     currentPageNumber() {
       const url = new URL(window.location.href);
-      return url.searchParams.get('page')
+      return parseInt(url.searchParams.get('page'));
     }
   },
   mounted() {
