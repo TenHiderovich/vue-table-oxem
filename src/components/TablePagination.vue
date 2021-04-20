@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="postCount > maxPosts">
     <ul>
       <li
         v-for="pageNumber in pageCount"
@@ -7,7 +7,7 @@
       >
         <a
           :href="`/?page=${pageNumber}`"
-          @click.prevent="handleSwitchPage"
+          @click.prevent="(e) => handleSwitchPage(e, pageNumber)"
         >
           {{ pageNumber }}
         </a>
@@ -21,14 +21,7 @@ export default {
   props: {
     postCount: Number,
     maxPosts: Number,
-  },
-  date() {
-    return {
-      currentPage: 1,
-    }
-  },
-  mounted() {
-    console.log(this.pageCount);
+    setPostsSlice: Function,
   },
   computed: {
     pageCount() {
@@ -36,10 +29,11 @@ export default {
     },
   },
   methods: {
-    handleSwitchPage(e) {
+    handleSwitchPage(e, currentPage) {
       const url = new URL(e.target.href);
       history.pushState(null, null, `/${url.search}`);
-    }
+      this.$emit('setPostsSlice', currentPage);
+    },
   }
 }
 </script>

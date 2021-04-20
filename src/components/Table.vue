@@ -3,7 +3,10 @@
     <table class="table">
       <thead>
         <tr>
-          <th v-for="th in thead" :key="th.name">
+          <th
+            v-for="th in thead"
+            :key="th.name"
+          >
             {{ th.name }}
           </th>
         </tr>
@@ -27,9 +30,9 @@
       </tbody>
     </table>
     <TablePagination
-      v-if="clients.length > currentSlicePosts.end"
       :post-count="clients.length"
-      :max-posts="currentSlicePosts.end"
+      :max-posts="postsSlice.max"
+      @setPostsSlice="setPostsSlice"
     ></TablePagination>
   </div>
 </template>
@@ -44,9 +47,10 @@ export default {
   data() {
     return {
       thead: [{ name: "id" }, { name: "Имя" }, { name: "Фамилия" }, { name: "Email" }, { name: "Телефон" }],
-      currentSlicePosts: {
+      postsSlice: {
         start: 0,
         end: 10,
+        max: 10,
       }
     };
   },
@@ -55,12 +59,19 @@ export default {
       return this.$store.getters["getClients"];
     },
     clientsSlice() {
-      const { start, end } = this.currentSlicePosts;
+      const { start, end } = this.postsSlice;
       return this.clients.slice(start, end);
+    },
+    currentPageNumber() {
+      const url = new URL(window.location.href);
+      return url.searchParams.get('page')
     }
   },
   mounted() {
     this.fetchData();
+    if (this.currentPageNumber) {
+      this.setPostsSlice(this.currentPageNumber);
+    }
   },
   methods: {
     fetchData() {
@@ -69,7 +80,17 @@ export default {
     handleGetClient(clientId) {
       const findedClient = this.clients.find(client => client.id === clientId);
       this.$store.commit("setCurrentClient", findedClient);
-    }
+    },
+    setPostsSlice(currentPage) {
+      const { max } = this.postsSlice;
+      if (currentPage === 1) {
+        this.postsSlice.start = 0;
+        this.postsSlice.end = max;
+      } else {
+        this.postsSlice.start = max * currentPage - max;
+        this.postsSlice.end = this.postsSlice.start + max;
+      }
+    },
   }
 };
 </script>
