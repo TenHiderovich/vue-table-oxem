@@ -1,5 +1,6 @@
 const initialState = {
   clients: [],
+  currentClient: {},
 };
 
 export default {
@@ -8,10 +9,16 @@ export default {
     getClients(state) {
       return state.clients;
     },
+    getCurrentClient(state) {
+      return state.currentClient;
+    },
   },
   mutations: {
     setClients(state, data) {
       state.clients = data;
+    },
+    setCurrentClient(state, data) {
+      state.currentClient = data;
     },
   },
   actions: {

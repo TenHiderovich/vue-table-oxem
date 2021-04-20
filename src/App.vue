@@ -2,28 +2,26 @@
   <div id="app">
     <SearchForm></SearchForm>
     <Table></Table>
-    <TablePagination></TablePagination>
+    <ClientDetails></ClientDetails>
     <ClientModal></ClientModal>
   </div>
 </template>
 
 <script>
-import Table from './components/Table';
-import SearchForm from './components/SearchForm';
-import TablePagination from './components/TablePagination';
-import ClientModal from './components/ClientModal';
+import Table from "./components/Table";
+import SearchForm from "./components/SearchForm";
+import ClientDetails from "./components/ClientDetails";
+import ClientModal from "./components/ClientModal";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     Table,
     SearchForm,
-    TablePagination,
+    ClientDetails,
     ClientModal,
-  }
-}
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>
