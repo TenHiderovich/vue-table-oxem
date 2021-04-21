@@ -10,6 +10,7 @@
             v-for="th in thead"
             :key="th.name"
             scope="col"
+            @click="() => handleSort(th.sortType)"
           >
             {{ th.name }}
           </th>
@@ -62,7 +63,13 @@ export default {
   },
   data() {
     return {
-      thead: [{ name: "id" }, { name: "Имя" }, { name: "Фамилия" }, { name: "Email" }, { name: "Телефон" }],
+      thead: [
+        { name: "id", sortType: "id", },
+        { name: "Имя", sortType: "firstName", },
+        { name: "Фамилия", sortType: "lastName", },
+        { name: "Email", sortType: "email", },
+        { name: "Телефон", sortType: "phone", }
+      ],
       postsSlice: {
         start: 0,
         end: 10,
@@ -110,6 +117,9 @@ export default {
         this.postsSlice.end = this.postsSlice.start + max;
       }
     },
+    handleSort(sortType) {
+      this.$store.commit('sortClietntsBy', sortType);
+    }
   }
 };
 </script>

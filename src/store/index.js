@@ -30,6 +30,11 @@ export default {
     setCurrentClient(state, data) {
       state.currentClient = data;
     },
+    sortClietntsBy(state, sortType) {
+      state.processedClients.sort((a, b) => {
+        return a[sortType] > b[sortType] ? 1 : -1;
+      });
+    }
   },
   actions: {
     async fetchClients({commit}) {

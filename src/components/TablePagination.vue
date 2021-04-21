@@ -46,7 +46,7 @@ export default {
     if (this.urlCurrentPageNumber) {
       this.currentPageNumber = this.urlCurrentPageNumber;
     } else {
-      this.currentPageNumber = pageNumber;
+      this.currentPageNumber = 1;
     }
   },
   methods: {
