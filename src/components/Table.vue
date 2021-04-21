@@ -31,7 +31,7 @@
       </tbody>
     </table>
     <TablePagination
-      :post-count="clients.length"
+      :post-count="processedClients.length"
       :max-posts="postsSlice.max"
       :current-page-number="currentPageNumber"
       @setPostsSlice="setPostsSlice"
@@ -57,15 +57,12 @@ export default {
     };
   },
   computed: {
-    clients() {
-      return this.$store.getters["getClients"];
-    },
-    filteredClients() {
-      return this.$store.getters["getFilteredClients"];
+    processedClients() {
+      return this.$store.getters["getProcessedClients"];
     },
     clientsSlice() {
       const { start, end } = this.postsSlice;
-      return this.clients.slice(start, end);
+      return this.processedClients.slice(start, end);
     },
     currentPageNumber() {
       const url = new URL(window.location.href);
@@ -83,7 +80,7 @@ export default {
       return this.$store.dispatch("fetchClients");
     },
     handleGetClient(clientId) {
-      const findedClient = this.clients.find(client => client.id === clientId);
+      const findedClient = this.processedClients.find(client => client.id === clientId);
       this.$store.commit("setCurrentClient", findedClient);
     },
     setPostsSlice(currentPage) {

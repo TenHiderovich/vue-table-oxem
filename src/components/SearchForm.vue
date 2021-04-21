@@ -39,7 +39,7 @@ export default {
           return client;
         }
       });
-      this.$store.commit('setClients', filteredClients);
+      this.$store.commit('setProcessedClients', filteredClients);
     }
   }
 };

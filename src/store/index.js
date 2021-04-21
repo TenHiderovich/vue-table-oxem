@@ -1,6 +1,6 @@
 const initialState = {
   clients: [],
-  fiteredClients: [],
+  processedClients: [],
   currentClient: {},
 };
 
@@ -10,8 +10,8 @@ export default {
     getClients(state) {
       return state.clients;
     },
-    getFilteredClients(state) {
-      return state.clients;
+    getProcessedClients(state) {
+      return state.processedClients;
     },
     getCurrentClient(state) {
       return state.currentClient;
@@ -21,8 +21,8 @@ export default {
     setClients(state, data) {
       state.clients = data;
     },
-    setFiteredClients(state, data) {
-      state.fiteredCliens = data;
+    setProcessedClients(state, data) {
+      state.processedClients = data;
     },
     setCurrentClient(state, data) {
       state.currentClient = data;
@@ -41,11 +41,13 @@ export default {
         {key: 'address', value: '{addressObject}'},
         {key: 'description', value: '{lorem|32}'},
       ]
-      for (const {key, value} of urlParams) {
+      for (const { key, value } of urlParams) {
         url.searchParams.set(key, value);
       }
       const response = await fetch(url);
-      commit('setClients', await response.json());
+      const data = await response.json();
+      commit('setProcessedClients', data);
+      commit('setClients', data);
     },
   },
 }

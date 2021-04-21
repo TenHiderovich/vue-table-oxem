@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="currentClient"
+    v-if="showDetailInfo"
     class="card"
   >
     <h5 class="card-header">
@@ -54,9 +54,27 @@
 <script>
 export default {
   name: "ClientDetails",
+  data() {
+    return {
+      showDetailInfo: false,
+    }
+  },
   computed: {
     currentClient() {
       return this.$store.getters["getCurrentClient"];
+    },
+    processedClients() {
+      return this.$store.getters["getProcessedClients"];
+    },
+  },
+  watch: {
+    currentClient(newValue) {
+      this.showDetailInfo = !!newValue;
+    },
+    processedClients(newValue) {
+      const { id } = this.currentClient;
+      const hasClientToProcessedClients = !!this.processedClients.find((client) => client.id === id);
+      this.showDetailInfo = hasClientToProcessedClients;
     }
   }
 };
