@@ -32,10 +32,12 @@ export default {
     async fetchClients({commit}) {
       const url = new URL('http://www.filltext.com');
       const urlParams = [
+        // {key: 'rows', value: 1000},
         {key: 'rows', value: 32},
         {key: 'id', value: '{number|1000000}'},
         {key: 'firstName', value: '{firstName}'},
         {key: 'lastName', value: '{lastName}'},
+        // {key: 'delay', value: 3},
         {key: 'email', value: '{email}'},
         {key: 'phone', value: '{phone|(xxx)xxx-xx-xx}'},
         {key: 'address', value: '{addressObject}'},

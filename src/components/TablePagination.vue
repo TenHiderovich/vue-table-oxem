@@ -3,13 +3,13 @@
     v-if="postCount > maxPosts"
     aria-label="Table navigation"
   >
-    <ul class="pagination">
+    <ul class="pagination flex-wrap">
       <li
         v-for="pageNumber in pageCount"
         :key="pageNumber"
         :class="[
           'page-item',
-          innerCurrentPageNumber === pageNumber ? 'active' : '',
+          isActive(pageNumber) ? 'active' : '',
         ]"
       >
         <a
@@ -30,11 +30,11 @@ export default {
     postCount: Number,
     maxPosts: Number,
     setPostsSlice: Function,
-    currentPageNumber: Number,
+    urlCurrentPageNumber: Number,
   },
   data() {
     return {
-      innerCurrentPageNumber: 1,
+      currentPageNumber: 1,
     }
   },
   computed: {
@@ -42,13 +42,23 @@ export default {
       return Math.ceil(this.postCount / this.maxPosts);
     },
   },
+  mounted() {
+    if (this.urlCurrentPageNumber) {
+      this.currentPageNumber = this.urlCurrentPageNumber;
+    } else {
+      this.currentPageNumber = pageNumber;
+    }
+  },
   methods: {
     handleSwitchPage(e, currentPage) {
       const url = new URL(e.target.href);
       history.pushState(null, null, `/${url.search}`);
-      this.innerCurrentPageNumber = currentPage;
+      this.currentPageNumber = currentPage;
       this.$emit('setPostsSlice', currentPage);
     },
+    isActive(pageNumber) {
+      return this.currentPageNumber === pageNumber;
+    }
   }
 }
 </script>

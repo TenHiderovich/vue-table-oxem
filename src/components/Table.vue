@@ -1,6 +1,9 @@
 <template>
   <div>
-    <table class="table table-striped table-hover">
+    <table
+      v-if="isLoaded"
+      class="table table-striped table-hover"
+    >
       <thead>
         <tr>
           <th
@@ -30,10 +33,21 @@
         </tr>
       </tbody>
     </table>
+    <div
+      v-else
+      class="d-flex justify-content-center p-5"
+    >
+      <div
+        class="spinner-border text-primary text-center"
+        role="status"
+      >
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
     <TablePagination
       :post-count="processedClients.length"
       :max-posts="postsSlice.max"
-      :current-page-number="currentPageNumber"
+      :url-current-page-number="urlCurrentPageNumber"
       @setPostsSlice="setPostsSlice"
     ></TablePagination>
   </div>
@@ -64,15 +78,18 @@ export default {
       const { start, end } = this.postsSlice;
       return this.processedClients.slice(start, end);
     },
-    currentPageNumber() {
+    urlCurrentPageNumber() {
       const url = new URL(window.location.href);
       return parseInt(url.searchParams.get('page'));
+    },
+    isLoaded() {
+      return this.processedClients.length > 0;
     }
   },
   mounted() {
     this.fetchData();
-    if (this.currentPageNumber) {
-      this.setPostsSlice(this.currentPageNumber);
+    if (this.urlCurrentPageNumber) {
+      this.setPostsSlice(this.urlCurrentPageNumber);
     }
   },
   methods: {
