@@ -1,7 +1,7 @@
 import store from '../';
 import clientsFixture from './__fixtures__/clients';
 
-describe('Clients getters', () => {
+describe('Clients mutations', () => {
   it('mutations setClients', () => {
     const state = {
       clients: [],

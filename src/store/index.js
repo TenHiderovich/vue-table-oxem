@@ -30,9 +30,14 @@ export default {
     setCurrentClient(state, data) {
       state.currentClient = data;
     },
-    sortClietntsBy(state, sortType) {
+    sortClietntsBy(state, { sortType, sortingDirection }) {
       state.processedClients.sort((a, b) => {
-        return a[sortType] > b[sortType] ? 1 : -1;
+        if (sortingDirection === 'up') {
+          return a[sortType] > b[sortType] ? 1 : -1;
+        }
+        if (sortingDirection === 'down') {
+          return a[sortType] < b[sortType] ? 1 : -1;
+        }
       });
     }
   },

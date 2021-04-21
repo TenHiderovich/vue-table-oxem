@@ -2,13 +2,13 @@
   <div>
     <div
       class="btn btn-primary"
-      @click="() => toggleFetchClientData('small')"
+      @click="() => toggleFetchClientData('fetchSmallClientsColl')"
     >
       Мало данных
     </div>
     <div
       class="btn btn-primary ms-4"
-      @click="() => toggleFetchClientData('large')"
+      @click="() => toggleFetchClientData('fetchLargeClientsColl')"
     >
       Много данных
     </div>
@@ -25,6 +25,10 @@
             @click="() => handleSort(th.sortType)"
           >
             {{ th.name }}
+            <template v-if="sortType === th.sortType">
+              <span v-if="sortingDirection === 'up'">&uarr;</span>
+              <span v-else>&darr;</span>
+            </template>
           </th>
         </tr>
       </thead>
@@ -89,6 +93,8 @@ export default {
         max: 10,
       },
       isProcessed: true,
+      sortingDirection: 'up',
+      sortType: null,
     };
   },
   computed: {
@@ -127,23 +133,28 @@ export default {
         this.postsSlice.end = this.postsSlice.start + max;
       }
     },
-    handleSort(sortType) {
-      this.$store.commit('sortClietntsBy', sortType);
+    sortClietntsBy(sortType) {
+      this.$store.commit('sortClietntsBy', {
+        sortType,
+        sortingDirection: this.sortingDirection
+      });
+      this.sortType = sortType;
     },
-    toggleFetchClientData(typeColl) {
+    handleSort(sortType) {
+      this.sortClietntsBy(sortType);
+      this.toggleSortingDirection();
+    },
+    toggleFetchClientData(fetchName) {
       this.isProcessed = true;
-      if (typeColl === 'small') {
-        this.$store.dispatch("fetchSmallClientsColl")
-          .then(() => {
-            this.isProcessed = false;
-          });
-      }
-      if (typeColl === 'large') {
-        this.$store.dispatch("fetchLargeClientsColl")
-          .then(() => {
-            this.isProcessed = false;
-          });
-      }
+      this.$store.dispatch(fetchName)
+        .then(() => {
+          this.sortingDirection = 'up';
+          this.sortType = null;
+          this.isProcessed = false;
+        });
+    },
+    toggleSortingDirection() {
+      this.sortingDirection = this.sortingDirection === 'up' ? 'down' : 'up';
     }
   }
 };

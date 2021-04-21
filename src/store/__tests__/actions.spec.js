@@ -22,9 +22,18 @@ describe('Clients actions', () => {
     fetch.mockClear();
   });
 
-  it('action fetchClients', async (done) => {
-    await store.dispatch("fetchClients");
+  it('action fetchSmallClientsColl', async (done) => {
+    await store.dispatch("fetchSmallClientsColl");
     await flushPromises();
+    expect(store.state.processedClients.length).toBe(2);
+    expect(store.state.clients.length).toBe(2);
+    done();
+  });
+
+  it('action fetchLargeClientsColl', async (done) => {
+    await store.dispatch("fetchLargeClientsColl");
+    await flushPromises();
+    expect(store.state.processedClients.length).toBe(2);
     expect(store.state.clients.length).toBe(2);
     done();
   });
