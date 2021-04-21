@@ -58,7 +58,7 @@
       </div>
     </div>
     <TablePagination
-      v-if="!isProcessed"
+      v-if="!isProcessed && processedClients.length > postsSlice.max"
       :post-count="processedClients.length"
       :max-posts="postsSlice.max"
       :url-current-page-number="urlCurrentPageNumber"

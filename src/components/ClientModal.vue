@@ -221,13 +221,17 @@ export default {
         .then(() => {
           this.processed = false;
           this.showModal = false;
-          this.resetformContent();
+          this.resetFormContent(this.formContent);
         });
     },
-    resetformContent() {
-      const fields = Object.keys(this.formContent);
-      for (const field of fields) {
-        this.formContent[field] = '';
+    resetFormContent(fields) {
+      const fieldsKeys = Object.keys(fields);
+      for (const key of fieldsKeys) {
+        if (typeof fields[key] === 'object') {
+          this.resetFormContent(fields[key]);
+        } else {
+          fields[key] = '';
+        }
       }
     },
     validate(fields) {

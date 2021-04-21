@@ -83,11 +83,11 @@ export default {
       return data;
     },
     addNewClient({ commit }, data) {
+      const newClient = {
+        id: Date.now(),
+        ...data,
+      };
       return new Promise((response) => {
-        const newClient = {
-          id: Date.now(),
-          ...data,
-        }
         setTimeout(() => {
           commit('addClient', newClient);
           response();
