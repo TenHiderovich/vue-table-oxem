@@ -1,7 +1,19 @@
 <template>
   <div>
+    <div
+      class="btn btn-primary"
+      @click="() => toggleFetchClientData('small')"
+    >
+      Мало данных
+    </div>
+    <div
+      class="btn btn-primary ms-4"
+      @click="() => toggleFetchClientData('large')"
+    >
+      Много данных
+    </div>
     <table
-      v-if="isLoaded"
+      v-if="!isProcessed"
       class="table table-striped table-hover"
     >
       <thead>
@@ -35,7 +47,7 @@
       </tbody>
     </table>
     <div
-      v-else
+      v-if="isProcessed"
       class="d-flex justify-content-center p-5"
     >
       <div
@@ -46,6 +58,7 @@
       </div>
     </div>
     <TablePagination
+      v-if="!isProcessed"
       :post-count="processedClients.length"
       :max-posts="postsSlice.max"
       :url-current-page-number="urlCurrentPageNumber"
@@ -74,7 +87,8 @@ export default {
         start: 0,
         end: 10,
         max: 10,
-      }
+      },
+      isProcessed: true,
     };
   },
   computed: {
@@ -91,18 +105,14 @@ export default {
     },
     isLoaded() {
       return this.processedClients.length > 0;
-    }
+    },
   },
   mounted() {
-    this.fetchData();
     if (this.urlCurrentPageNumber) {
       this.setPostsSlice(this.urlCurrentPageNumber);
     }
   },
   methods: {
-    fetchData() {
-      return this.$store.dispatch("fetchClients");
-    },
     handleGetClient(clientId) {
       const findedClient = this.processedClients.find(client => client.id === clientId);
       this.$store.commit("setCurrentClient", findedClient);
@@ -119,6 +129,21 @@ export default {
     },
     handleSort(sortType) {
       this.$store.commit('sortClietntsBy', sortType);
+    },
+    toggleFetchClientData(typeColl) {
+      this.isProcessed = true;
+      if (typeColl === 'small') {
+        this.$store.dispatch("fetchSmallClientsColl")
+          .then(() => {
+            this.isProcessed = false;
+          });
+      }
+      if (typeColl === 'large') {
+        this.$store.dispatch("fetchLargeClientsColl")
+          .then(() => {
+            this.isProcessed = false;
+          });
+      }
     }
   }
 };

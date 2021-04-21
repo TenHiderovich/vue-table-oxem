@@ -2,10 +2,8 @@
   <div class="modal-wrapper">
     <div
       id="clientCreateModal"
-      :class="[
-        'modal fade',
-        showModal ? 'show' : '',
-      ]"
+      class="modal fade"
+      :class="{'show': showModal}"
       tabindex="-1"
       aria-labelledby="clientCreateModalLabel"
       aria-hidden="true"
@@ -32,21 +30,29 @@
           <div class="modal-body">
             <div class="input-group mb-2">
               <input
-                v-model="modalContent.firstName"
+                v-model="formContent.firstName"
                 type="text"
                 class="form-control"
-                placeholder="Имя"
-                aria-label="Имя"
+                :class="{'is-invalid': !!errors.firstName}"
+                placeholder="Имя *"
+                aria-label="Имя (обязательное)"
               >
+              <div v-if="errors.firstName" class="invalid-feedback">
+                {{ errors.firstName }}
+              </div>
             </div>
             <div class="input-group mb-4">
               <input
-                v-model="modalContent.lastName"
+                v-model="formContent.lastName"
                 type="text"
                 class="form-control"
-                placeholder="Фамилия"
-                aria-label="Фамилия"
+                :class="{'is-invalid': !!errors.lastName}"
+                placeholder="Фамилия *"
+                aria-label="Фамилия (обязательное)"
               >
+              <div v-if="errors.lastName" class="invalid-feedback">
+                {{ errors.lastName }}
+              </div>
             </div>
             <fieldset class="mb-4">
               <legend class="fs-5">
@@ -54,21 +60,29 @@
               </legend>
               <div class="input-group mb-2">
                 <input
-                  v-model="modalContent.phone"
+                  v-model="formContent.phone"
                   type="text"
                   class="form-control"
-                  placeholder="Телефон"
-                  aria-label="Телефон"
+                  :class="{'is-invalid': !!errors.phone}"
+                  placeholder="Телефон *"
+                  aria-label="Телефон (обязательное)"
                 >
+                <div v-if="errors.phone" class="invalid-feedback">
+                  {{ errors.phone }}
+                </div>
               </div>
               <div class="input-group">
                 <input
-                  v-model="modalContent.email"
+                  v-model="formContent.email"
                   type="text"
                   class="form-control"
-                  placeholder="Email"
-                  aria-label="Email"
+                  :class="{'is-invalid': !!errors.phone}"
+                  placeholder="Email *"
+                  aria-label="Email (обязательное)"
                 >
+                <div v-if="errors.email" class="invalid-feedback">
+                  {{ errors.email }}
+                </div>
               </div>
             </fieldset>
             <fieldset class="mb-4">
@@ -77,7 +91,7 @@
               </legend>
               <div class="input-group mb-2">
                 <input
-                  v-model="modalContent.address.streetAddress"
+                  v-model="formContent.address.streetAddress"
                   type="text"
                   class="form-control"
                   placeholder="Улица"
@@ -86,7 +100,7 @@
               </div>
               <div class="input-group mb-2">
                 <input
-                  v-model="modalContent.address.city"
+                  v-model="formContent.address.city"
                   type="text"
                   class="form-control"
                   placeholder="Город"
@@ -95,7 +109,7 @@
               </div>
               <div class="input-group mb-2">
                 <input
-                  v-model="modalContent.address.state"
+                  v-model="formContent.address.state"
                   type="text"
                   class="form-control"
                   placeholder="Провинция/штат"
@@ -104,7 +118,7 @@
               </div>
               <div class="input-group">
                 <input
-                  v-model="modalContent.address.zip"
+                  v-model="formContent.address.zip"
                   type="text"
                   class="form-control"
                   placeholder="Индекс"
@@ -120,7 +134,7 @@
                 Описание
               </label>
               <textarea
-                v-model="modalContent.description"
+                v-model="formContent.description"
                 class="form-control"
                 id="description"
                 rows="3"
@@ -153,21 +167,22 @@
       <span class="visually-hidden">Добавить клиента</span>
     </button>
     <div
-      :class="[
-        'modal-backdrop fade',
-        showModal ? 'show' : '',
-      ]"
+      class="modal-backdrop fade"
+      :class="{'show': showModal}"
     ></div>
   </div>
 </template>
 <script>
+import * as yup from 'yup';
+
 export default {
   name: "ClientModal",
   data() {
     return {
       showModal: false,
       processed: false,
-      modalContent: {
+      valid: true,
+      formContent: {
         firstName: '',
         lastName: '',
         phone: '',
@@ -179,7 +194,13 @@ export default {
           zip: '',
         },
         description: '',
-      }
+      },
+      errors: {},
+    }
+  },
+  watch: {
+    errors(newValue) {
+      this.valid = Object.keys(newValue).length === 0;
     }
   },
   methods: {
@@ -190,21 +211,60 @@ export default {
       this.showModal = false;
     },
     handleAddClient() {
+      this.validate(this.formContent);
+      if (!this.valid) {
+        return;
+      }
       this.processed = true;
       this.$store
-        .dispatch('addNewClient', this.modalContent)
+        .dispatch('addNewClient', this.formContent)
         .then(() => {
           this.processed = false;
           this.showModal = false;
-          this.resetModalContent();
+          this.resetformContent();
         });
     },
-    resetModalContent() {
-      const fields = Object.keys(this.modalContent);
+    resetformContent() {
+      const fields = Object.keys(this.formContent);
       for (const field of fields) {
-        this.modalContent[field] = '';
+        this.formContent[field] = '';
       }
-    }
+    },
+    validate(fields) {
+      let schema = yup.object().shape({
+        firstName: yup.string().required(),
+        lastName: yup.string().required(),
+        email: yup.string().email().required(),
+        phone: yup.string().matches(/^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/, { excludeEmptyString: true }).required(),
+      });
+
+      try {
+        schema.validateSync(fields, { abortEarly: false });
+        this.valid = true;
+        this.errors = {};
+      } catch (e) {
+        this.valid = false;
+        this.errors = e.inner.reduce((acc, error) => {
+          switch (error.type) {
+            case 'required': {
+              return {
+                ...acc,
+                [error.path]: 'Поле обязательное для заполнения',
+              }
+            }
+            case 'email':
+            case 'matches': {
+              return {
+                ...acc,
+                [error.path]: 'Введите корректное значнние',
+              }
+            }
+            default:
+              return acc;
+          }
+        }, {});
+      }
+    },
   },
 };
 </script>

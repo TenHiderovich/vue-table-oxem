@@ -22,7 +22,7 @@ export default {
       state.clients = data;
     },
     addClient(storeState, newClient) {
-      storeState.clients.push(newClient);
+      storeState.clients.unshift(newClient);
     },
     setProcessedClients(state, data) {
       state.processedClients = data;
@@ -37,15 +37,13 @@ export default {
     }
   },
   actions: {
-    async fetchClients({commit}) {
+    async fetchSmallClientsColl({commit}) {
       const url = new URL('http://www.filltext.com');
       const urlParams = [
-        // {key: 'rows', value: 1000},
         {key: 'rows', value: 32},
         {key: 'id', value: '{number|1000000}'},
         {key: 'firstName', value: '{firstName}'},
         {key: 'lastName', value: '{lastName}'},
-        // {key: 'delay', value: 3},
         {key: 'email', value: '{email}'},
         {key: 'phone', value: '{phone|(xxx)xxx-xx-xx}'},
         {key: 'address', value: '{addressObject}'},
@@ -58,6 +56,31 @@ export default {
       const data = await response.json();
       commit('setProcessedClients', data);
       commit('setClients', data);
+
+      return data;
+    },
+    async fetchLargeClientsColl({commit}) {
+      const url = new URL('http://www.filltext.com');
+      const urlParams = [
+        {key: 'rows', value: 1000},
+        {key: 'id', value: '{number|1000000}'},
+        {key: 'firstName', value: '{firstName}'},
+        {key: 'lastName', value: '{lastName}'},
+        {key: 'delay', value: 3},
+        {key: 'email', value: '{email}'},
+        {key: 'phone', value: '{phone|(xxx)xxx-xx-xx}'},
+        {key: 'address', value: '{addressObject}'},
+        {key: 'description', value: '{lorem|32}'},
+      ]
+      for (const { key, value } of urlParams) {
+        url.searchParams.set(key, value);
+      }
+      const response = await fetch(url);
+      const data = await response.json();
+      commit('setProcessedClients', data);
+      commit('setClients', data);
+
+      return data;
     },
     addNewClient({ commit }, data) {
       return new Promise((response) => {
@@ -65,8 +88,10 @@ export default {
           id: Date.now(),
           ...data,
         }
-        commit('addClient', newClient);
-        setTimeout(response, 1000);
+        setTimeout(() => {
+          commit('addClient', newClient);
+          response();
+        }, 1000);
       });
     }
   },

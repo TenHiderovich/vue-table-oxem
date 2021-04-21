@@ -1,8 +1,5 @@
 <template>
-  <nav
-    v-if="postCount > maxPosts"
-    aria-label="Table navigation"
-  >
+  <nav aria-label="Table navigation">
     <ul class="pagination flex-wrap">
       <li
         v-for="pageNumber in pageCount"
