@@ -21,6 +21,9 @@ export default {
     setClients(state, data) {
       state.clients = data;
     },
+    addClient(storeState, newClient) {
+      storeState.clients.push(newClient);
+    },
     setProcessedClients(state, data) {
       state.processedClients = data;
     },
@@ -51,5 +54,15 @@ export default {
       commit('setProcessedClients', data);
       commit('setClients', data);
     },
+    addNewClient({ commit }, data) {
+      return new Promise((response) => {
+        const newClient = {
+          id: Date.now(),
+          ...data,
+        }
+        commit('addClient', newClient);
+        setTimeout(response, 1000);
+      });
+    }
   },
 }

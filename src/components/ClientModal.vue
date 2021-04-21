@@ -11,7 +11,10 @@
       aria-hidden="true"
     >
       <div class="modal-dialog">
-        <form class="modal-content">
+        <form
+          class="modal-content"
+          @submit.prevent="handleAddClient"
+        >
           <div class="modal-header">
             <h5
               id="clientCreateModalLabel"
@@ -68,13 +71,13 @@
                 >
               </div>
             </fieldset>
-            <fieldset>
+            <fieldset class="mb-4">
               <legend class="fs-5">
                 Адрес
               </legend>
               <div class="input-group mb-2">
                 <input
-                  v-model="modalContent.street"
+                  v-model="modalContent.address.streetAddress"
                   type="text"
                   class="form-control"
                   placeholder="Улица"
@@ -83,7 +86,7 @@
               </div>
               <div class="input-group mb-2">
                 <input
-                  v-model="modalContent.city"
+                  v-model="modalContent.address.city"
                   type="text"
                   class="form-control"
                   placeholder="Город"
@@ -92,16 +95,16 @@
               </div>
               <div class="input-group mb-2">
                 <input
-                  v-model="modalContent.state"
+                  v-model="modalContent.address.state"
                   type="text"
                   class="form-control"
                   placeholder="Провинция/штат"
                   aria-label="Провинция/штат"
                 >
               </div>
-              <div class="input-group mb-2">
+              <div class="input-group">
                 <input
-                  v-model="modalContent.zip"
+                  v-model="modalContent.address.zip"
                   type="text"
                   class="form-control"
                   placeholder="Индекс"
@@ -109,13 +112,35 @@
                 >
               </div>
             </fieldset>
+            <div class="mb-2">
+              <label
+                for="description"
+                class="form-label fs-5"
+              >
+                Описание
+              </label>
+              <textarea
+                v-model="modalContent.description"
+                class="form-control"
+                id="description"
+                rows="3"
+              ></textarea>
+            </div>
           </div>
-          <input
-            type="submit"
-            value="Добавить"
+          <button
             class="btn btn-primary rounded-0 rounded-bottom"
-            @submit.prevent="handleAddClient"
+            type="submit"
+            :disabled="processed"
           >
+            <span
+              v-if="processed"
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            >
+            </span>
+            <span v-else>Добавить</span>
+          </button>
         </form>
       </div>
     </div>
@@ -125,6 +150,7 @@
       @click="handleShowModal"
     >
       +
+      <span class="visually-hidden">Добавить клиента</span>
     </button>
     <div
       :class="[
@@ -140,15 +166,19 @@ export default {
   data() {
     return {
       showModal: false,
+      processed: false,
       modalContent: {
         firstName: '',
         lastName: '',
         phone: '',
         email: '',
-        street: '',
-        city: '',
-        state: '',
-        zip: '',
+        address: {
+          streetAddress: '',
+          city: '',
+          state: '',
+          zip: '',
+        },
+        description: '',
       }
     }
   },
@@ -160,7 +190,20 @@ export default {
       this.showModal = false;
     },
     handleAddClient() {
-
+      this.processed = true;
+      this.$store
+        .dispatch('addNewClient', this.modalContent)
+        .then(() => {
+          this.processed = false;
+          this.showModal = false;
+          this.resetModalContent();
+        });
+    },
+    resetModalContent() {
+      const fields = Object.keys(this.modalContent);
+      for (const field of fields) {
+        this.modalContent[field] = '';
+      }
     }
   },
 };
@@ -179,6 +222,7 @@ export default {
 
   .modal.show {
     display: block;
+    overflow-y: scroll
   }
 
   .modal-triger {
