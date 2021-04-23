@@ -7,19 +7,23 @@
       v-model="input"
       type="text"
       class="form-control rounded-0 rounded-start"
-      @input="handleSearch"
-      @keyup.delete="handleSearch"
     />
-    <input
+    <BaseButton
+      tag="button"
       type="submit"
-      value="Найти"
-      class="btn btn-primary rounded-0 rounded-end"
+      inner-text="Найти"
+      classes="btn-primary rounded-0 rounded-end"
     />
   </form>
 </template>
 <script>
+import BaseButton from "../components/BaseElements/BaseButton";
+
 export default {
   name: "SearchForm",
+  components: {
+    BaseButton,
+  },
   data() {
     return {
       input: ''

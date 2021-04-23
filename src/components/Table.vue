@@ -1,19 +1,28 @@
 <template>
   <div>
-    <div
-      class="btn btn-primary"
-      @click="() => toggleFetchClientData('fetchSmallClientsColl')"
-    >
-      Мало данных
+    <div class="mb-4">
+      <BaseButton
+        tag="button"
+        type="button"
+        inner-text="Мало данных"
+        classes="btn-primary btn-small-data"
+        @click="() => toggleFetchClientData('small')"
+      />
+      <BaseButton
+        tag="button"
+        type="button"
+        inner-text="Много данных"
+        classes="btn-primary ms-4"
+        @click="() => toggleFetchClientData('large')"
+      />
     </div>
-    <div
-      class="btn btn-primary ms-4"
-      @click="() => toggleFetchClientData('fetchLargeClientsColl')"
-    >
-      Много данных
-    </div>
+    <BaseAlert
+      v-if="hasResponseError"
+      inner-text="Упс.. Что то пошло не так :( Попробуйте позже."
+      classes="alert-danger"
+    />
     <table
-      v-if="!isProcessed"
+      v-if="!isProcessed && isLoaded"
       class="table table-striped table-hover"
     >
       <thead>
@@ -50,17 +59,11 @@
         </tr>
       </tbody>
     </table>
-    <div
-      v-if="isProcessed"
-      class="d-flex justify-content-center p-5"
-    >
-      <div
-        class="spinner-border text-primary text-center"
-        role="status"
-      >
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
+    <BaseLoader
+      :is-processed="isProcessed"
+      wrapper-calsses="d-flex justify-content-center p-5"
+      loader-calsses="spinner-border text-primary text-center"
+    />
     <TablePagination
       v-if="!isProcessed && processedClients.length > postsSlice.max"
       :post-count="processedClients.length"
@@ -72,11 +75,17 @@
 </template>
 <script>
 import TablePagination from "../components/TablePagination";
+import BaseButton from "../components/BaseElements/BaseButton";
+import BaseLoader from "../components/BaseElements/BaseLoader";
+import BaseAlert from "../components/BaseElements/BaseAlert";
 
 export default {
   name: "Table",
   components: {
     TablePagination,
+    BaseButton,
+    BaseLoader,
+    BaseAlert,
   },
   data() {
     return {
@@ -92,7 +101,7 @@ export default {
         end: 10,
         max: 10,
       },
-      isProcessed: true,
+      isProcessed: false,
       sortingDirection: 'up',
       sortType: null,
     };
@@ -100,6 +109,9 @@ export default {
   computed: {
     processedClients() {
       return this.$store.getters["getProcessedClients"];
+    },
+    hasResponseError() {
+      return this.$store.getters["getHasResponseError"];
     },
     clientsSlice() {
       const { start, end } = this.postsSlice;
@@ -146,12 +158,12 @@ export default {
     },
     toggleFetchClientData(fetchName) {
       this.isProcessed = true;
-      this.$store.dispatch(fetchName)
+      this.$store.dispatch('fetchClientData', fetchName)
         .then(() => {
           this.sortingDirection = 'up';
           this.sortType = null;
           this.isProcessed = false;
-        });
+        })
     },
     toggleSortingDirection() {
       this.sortingDirection = this.sortingDirection === 'up' ? 'down' : 'up';

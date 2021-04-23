@@ -20,40 +20,46 @@
             >
               Добвление клиента
             </h5>
-            <button
+            <BaseButton
+              tag="button"
               type="button"
-              class="btn-close"
               aria-label="Close"
+              classes="btn-close"
               @click="handleCloseModal"
-            ></button>
+            />
           </div>
           <div class="modal-body">
-            <div class="input-group mb-2">
-              <input
-                v-model="formContent.firstName"
-                type="text"
-                class="form-control"
-                :class="{'is-invalid': !!errors.firstName}"
-                placeholder="Имя *"
-                aria-label="Имя (обязательное)"
-              >
-              <div v-if="errors.firstName" class="invalid-feedback">
-                {{ errors.firstName }}
+            <fieldset class="mb-4">
+              <legend class="visually-hidden">
+                Имя и фамилия
+              </legend>
+              <div class="input-group mb-2">
+                <input
+                  v-model="formContent.firstName"
+                  type="text"
+                  class="form-control"
+                  :class="{'is-invalid': !!errors.firstName}"
+                  placeholder="Имя *"
+                  aria-label="Имя (обязательное)"
+                >
+                <div v-if="errors.firstName" class="invalid-feedback">
+                  {{ errors.firstName }}
+                </div>
               </div>
-            </div>
-            <div class="input-group mb-4">
-              <input
-                v-model="formContent.lastName"
-                type="text"
-                class="form-control"
-                :class="{'is-invalid': !!errors.lastName}"
-                placeholder="Фамилия *"
-                aria-label="Фамилия (обязательное)"
-              >
-              <div v-if="errors.lastName" class="invalid-feedback">
-                {{ errors.lastName }}
+              <div class="input-group">
+                <input
+                  v-model="formContent.lastName"
+                  type="text"
+                  class="form-control"
+                  :class="{'is-invalid': !!errors.lastName}"
+                  placeholder="Фамилия *"
+                  aria-label="Фамилия (обязательное)"
+                >
+                <div v-if="errors.lastName" class="invalid-feedback">
+                  {{ errors.lastName }}
+                </div>
               </div>
-            </div>
+            </fieldset>
             <fieldset class="mb-4">
               <legend class="fs-5">
                 Контакты
@@ -141,31 +147,24 @@
               ></textarea>
             </div>
           </div>
-          <button
-            class="btn btn-primary rounded-0 rounded-bottom"
+          <BaseButton
+            tag="button"
             type="submit"
+            inner-text="Добавить"
+            classes="btn-primary rounded-0 rounded-bottom"
+            :processed="processed"
             :disabled="processed"
-          >
-            <span
-              v-if="processed"
-              class="spinner-border spinner-border-sm"
-              role="status"
-              aria-hidden="true"
-            >
-            </span>
-            <span v-else>Добавить</span>
-          </button>
+          />
         </form>
       </div>
     </div>
-    <button
+    <BaseButton
+      tag="button"
       type="button"
-      class="btn btn-primary btn-lg modal-triger rounded-circle"
+      inner-text="+"
+      classes="btn-primary btn-lg modal-triger rounded-circle"
       @click="handleShowModal"
-    >
-      +
-      <span class="visually-hidden">Добавить клиента</span>
-    </button>
+    />
     <div
       class="modal-backdrop fade"
       :class="{'show': showModal}"
@@ -174,9 +173,13 @@
 </template>
 <script>
 import * as yup from 'yup';
+import BaseButton from "../components/BaseElements/BaseButton";
 
 export default {
   name: "ClientModal",
+  components: {
+    BaseButton,
+  },
   data() {
     return {
       showModal: false,
