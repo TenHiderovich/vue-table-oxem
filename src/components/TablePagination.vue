@@ -11,8 +11,8 @@
       >
         <a
           :href="`/?page=${pageNumber}`"
-          @click.prevent="(e) => handleSwitchPage(e, pageNumber)"
           class="page-link"
+          @click.prevent="(e) => handleSwitchPage(e, pageNumber)"
         >
           {{ pageNumber }}
         </a>

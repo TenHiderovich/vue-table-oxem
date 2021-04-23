@@ -3,9 +3,9 @@
     :is="tag"
     class="btn"
     :class="classes"
+    :disabled="disabled"
     v-bind="$attrs"
     v-on="$listeners"
-    :disabled="disabled"
   >
     <BaseLoader
       v-if="processed"

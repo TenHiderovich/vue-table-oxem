@@ -42,7 +42,10 @@
                   placeholder="Имя *"
                   aria-label="Имя (обязательное)"
                 >
-                <div v-if="errors.firstName" class="invalid-feedback">
+                <div
+                  v-if="errors.firstName"
+                  class="invalid-feedback"
+                >
                   {{ errors.firstName }}
                 </div>
               </div>
@@ -55,7 +58,10 @@
                   placeholder="Фамилия *"
                   aria-label="Фамилия (обязательное)"
                 >
-                <div v-if="errors.lastName" class="invalid-feedback">
+                <div
+                  v-if="errors.lastName"
+                  class="invalid-feedback"
+                >
                   {{ errors.lastName }}
                 </div>
               </div>
@@ -73,7 +79,10 @@
                   placeholder="Телефон *"
                   aria-label="Телефон (обязательное)"
                 >
-                <div v-if="errors.phone" class="invalid-feedback">
+                <div
+                  v-if="errors.phone"
+                  class="invalid-feedback"
+                >
                   {{ errors.phone }}
                 </div>
               </div>
@@ -86,7 +95,10 @@
                   placeholder="Email *"
                   aria-label="Email (обязательное)"
                 >
-                <div v-if="errors.email" class="invalid-feedback">
+                <div
+                  v-if="errors.email"
+                  class="invalid-feedback"
+                >
                   {{ errors.email }}
                 </div>
               </div>
@@ -142,7 +154,6 @@
               <textarea
                 v-model="formContent.description"
                 class="form-control"
-                id="description"
                 rows="3"
               ></textarea>
             </div>
