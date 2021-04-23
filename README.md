@@ -20,5 +20,12 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Build docker
+```
+docker build -t oxem-studio .
+```
+
+### Start from docker
+```
+docker run -it -p 8080:8080 --rm --name oxem-studio oxem-studio
+```
